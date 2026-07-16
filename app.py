@@ -3,9 +3,12 @@ import os
 import sys
 import tempfile
 
-# --- FIX: Ensure Python can find the 'core' directory on Streamlit Cloud ---
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+# --- CRITICAL FIX: Add current directory and its parent to Python's search path ---
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if current_dir not in sys.path:
+    sys.path.insert(0, current_dir)
 
+# Now, Python will successfully find the 'core' directory
 from core.models import transcribe_audio, calculate_semantic_similarity
 from core.audio import analyze_audio_fluency
 
@@ -49,7 +52,7 @@ uploaded_file = st.file_uploader(
 )
 
 if uploaded_file is not None:
-    # --- FIX 1: Write to system temporary folder to prevent infinite restart loops ---
+    # --- WRITE TO SYSTEM TEMP FOLDER ---
     suffix = os.path.splitext(uploaded_file.name)[1]
     with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as temp_file:
         temp_file.write(uploaded_file.read())
@@ -114,7 +117,7 @@ if uploaded_file is not None:
             st.markdown("### 🎯 Expected Concept Definition")
             st.code(reference_concept, language="markdown")
             
-            # --- FIX 2: Only delete the temp file AFTER processing is fully done ---
+            # --- DELETE TEMP FILE AFTER USE ---
             if os.path.exists(temp_filename):
                 os.remove(temp_filename)
 else:
