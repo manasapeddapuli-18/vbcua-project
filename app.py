@@ -1,6 +1,11 @@
 import streamlit as st
 import os
+import sys
 import tempfile
+
+# --- FIX: Ensure Python can find the 'core' directory on Streamlit Cloud ---
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from core.models import transcribe_audio, calculate_semantic_similarity
 from core.audio import analyze_audio_fluency
 
