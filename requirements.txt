@@ -1,0 +1,5 @@
+streamlit
+torch
+openai-whisper
+sentence-transformers
+numpy
